@@ -14,7 +14,7 @@ slugify <- function(str) {
 }
 
 tree <- read.tree("downloads/actinopt_12k_treePL.tre.xz")
-fossil_nodes <- read_csv("downloads/fossil/output_data.csv")
+fossil_nodes <- read_csv("downloads/fossil_data.csv")
 
 fossil_nodes$idx <- seq_len(nrow(fossil_nodes))
 
