@@ -22,8 +22,11 @@ COPY data/* data/
 
 COPY scripts/* scripts/
 
-RUN Rscript scripts/generate_taxonomy.R family && Rscript scripts/generate_taxonomy.R order
-RUN Rscript scripts/generate_monophyly.R family && Rscript scripts/generate_monophyly.R order
-RUN Rscript scripts/generate_fossils.R
+RUN Rscript scripts/generate_taxonomy.R family \
+    && Rscript scripts/generate_taxonomy.R order \
+    && Rscript scripts/generate_monophyly.R family \
+    && Rscript scripts/generate_monophyly.R order \
+    && Rscript scripts/generate_fossils.R \
+    && rm -rf data/* scripts/*
 
 CMD ["R"]
