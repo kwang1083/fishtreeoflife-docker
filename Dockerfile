@@ -1,5 +1,29 @@
-FROM r-base
+FROM rocker/r-ver:3.5.1
 
-RUN R -e 'pkg <- c("MonoPhy", "tidyverse", "glue", "future"); install.packages(pkg, repos = "https://cran.rstudio.com", Ncpu = parallel::detectCores()); if (!all(pkg) %in% installed.packages()) q(status = 1, save = "no")'
+# From rocker/tidyverse image, but without RStudio!
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+  libxml2-dev \
+  libcairo2-dev \
+  libsqlite3-dev \
+  libssh2-1-dev \
+  libcurl4-openssl-dev \
+  libssl-dev \
+  unixodbc-dev \
+  && install2.r --error \
+    --deps TRUE \
+    tidyverse \
+    caTools \
+    BiocManager \
+    MonoPhy \
+    ape \
+    future
 
-COPY data/* .
+COPY data/* data/
+
+COPY scripts/* scripts/
+
+RUN Rscript scripts/generate_taxonomy.R family && Rscript scripts/generate_taxonomy.R order
+RUN Rscript scripts/generate_monophyly.R family && Rscript scripts/generate_monophyly.R order
+RUN Rscript scripts/generate_fossils.R
+
+CMD ["R"]
