@@ -1,22 +1,6 @@
-FROM rocker/r-ver:3.5.1
+FROM rocker/tidyverse:3.5.1
 
-# From rocker/tidyverse image, but without RStudio!
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-  libxml2-dev \
-  libcairo2-dev \
-  libsqlite3-dev \
-  libssh2-1-dev \
-  libcurl4-openssl-dev \
-  libssl-dev \
-  unixodbc-dev \
-  && install2.r --error \
-    --deps TRUE \
-    tidyverse \
-    caTools \
-    BiocManager \
-    MonoPhy \
-    ape \
-    future
+RUN install2.r --error --deps TRUE ape future MonoPhy
 
 COPY data/* data/
 
