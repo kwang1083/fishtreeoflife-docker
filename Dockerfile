@@ -2,7 +2,7 @@ FROM rocker/tidyverse:3.5.1
 
 RUN install2.r --error --deps TRUE ape future MonoPhy
 
-COPY data/* data/
+COPY downloads/* downloads/
 
 COPY scripts/* scripts/
 

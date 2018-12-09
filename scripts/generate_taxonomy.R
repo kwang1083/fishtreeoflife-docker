@@ -28,13 +28,13 @@ if (length(RANK) < 1) q(status = 1)
 
 plan(multicore)
 
-tre %<-% read.tree("data/actinopt_12k_treePL.tre.xz")
-tre2 %<-% read.tree("data/actinopt_12k_raxml.tre.xz")
-tax %<-% read_csv("data/PFC_short_classification.csv.xz")
+tre %<-% read.tree("downloads/actinopt_12k_treePL.tre.xz")
+tre2 %<-% read.tree("downloads/actinopt_12k_raxml.tre.xz")
+tax %<-% read_csv("downloads/PFC_short_classification.csv.xz")
 #fulltree %<-% read.tree("downloads/actinopt_full.trees.xz")
-dna %<-% scan("data/final_alignment.phylip.xz", what = list(character(), character()), quiet = TRUE, nlines = 11650, strip.white = TRUE, skip = 1)
-charsets <- readLines("data/final_alignment.partitions") %>% str_replace_all(fixed("DNA, "), "")
-tiprates <- read_csv("data/tiprates.csv.xz")
+dna %<-% scan("downloads/final_alignment.phylip.xz", what = list(character(), character()), quiet = TRUE, nlines = 11650, strip.white = TRUE, skip = 1)
+charsets <- readLines("downloads/final_alignment.partitions") %>% str_replace_all(fixed("DNA, "), "")
+tiprates <- read_csv("downloads/tiprates.csv.xz")
 
 datapath <- "_data/taxonomy"
 
@@ -111,7 +111,7 @@ invisible(tre2)
 #invisible(fulltree)
 
 cat("Starting", RANK, fill = TRUE)
-downloadpath <- file.path("_data/taxonomy", RANK)
+downloadpath <- file.path("downloads/taxonomy", RANK)
 dir.create(downloadpath, recursive = TRUE)
 
 splat <- split(tax, tax[[RANK]])

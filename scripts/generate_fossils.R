@@ -13,8 +13,8 @@ slugify <- function(str) {
     str %>% str_replace_all("[^a-zA-Z0-9-]", "-") %>% str_replace_all("-+", "-") %>% str_replace("-$", "") %>% tolower()
 }
 
-tree <- read.tree("data/actinopt_12k_treePL.tre.xz")
-fossil_nodes <- read_csv("data/fossil_data.csv")
+tree <- read.tree("downloads/actinopt_12k_treePL.tre.xz")
+fossil_nodes <- read_csv("downloads/fossil/output_data.csv")
 
 fossil_nodes$idx <- seq_len(nrow(fossil_nodes))
 
