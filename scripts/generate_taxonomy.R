@@ -30,7 +30,7 @@ plan(multicore)
 
 tre %<-% read.tree("downloads/actinopt_12k_treePL.tre.xz")
 tre2 %<-% read.tree("downloads/actinopt_12k_raxml.tre.xz")
-tax %<-% read_csv("downloads/PFC_short_classification.csv.xz")
+tax %<-% read_csv("downloads/PFC_taxonomy.csv.xz")
 #fulltree %<-% read.tree("downloads/actinopt_full.trees.xz")
 dna %<-% scan("downloads/final_alignment.phylip.xz", what = list(character(), character()), quiet = TRUE, nlines = 11650, strip.white = TRUE, skip = 1)
 charsets <- readLines("downloads/final_alignment.partitions") %>% str_replace_all(fixed("DNA, "), "")
