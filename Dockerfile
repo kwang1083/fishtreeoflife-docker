@@ -22,7 +22,11 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     selectr \
     ape \
     future \
-    MonoPhy
+    MonoPhy \
+&& rm -rf /tmp/* \
+&& apt-get autoremove -y \
+&& apt-get autoclean -y \
+&& rm -rf /var/lib/apt/lists/*
 
 COPY downloads/* downloads/
 
