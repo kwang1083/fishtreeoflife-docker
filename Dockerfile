@@ -23,10 +23,10 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     ape \
     future \
     MonoPhy \
-&& rm -rf /tmp/* \
-&& apt-get autoremove -y \
-&& apt-get autoclean -y \
-&& rm -rf /var/lib/apt/lists/*
+  && rm -rf /tmp/* \
+  && apt-get autoremove -y \
+  && apt-get autoclean -y \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY downloads/* downloads/
 
