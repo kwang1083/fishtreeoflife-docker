@@ -10,7 +10,7 @@ if (length(wanted_rank) < 1) q(status = 1)
 OUTDIR <- "_data/monophyly"
 
 tre <- read.tree("downloads/actinopt_12k_treePL.tre.xz")
-tax_orig <- read_csv("downloads/PFC_taxonomy.csv.xz", guess_max = 10000) %>% transmute(tip = gsub(" ", "_", genus.species), label = .data[[wanted_rank]])
+tax_orig <- read_csv("downloads/PFC_taxonomy.csv.xz", guess_max = 15000) %>% transmute(tip = gsub(" ", "_", genus.species), label = .data[[wanted_rank]])
 
 tax <- tax_orig %>% filter(tip %in% tre$tip.label) %>% as.data.frame()
 
