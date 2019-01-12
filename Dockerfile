@@ -9,12 +9,13 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     libedit2 \
     libssl-dev \
     libmagick++-dev \
+    curl \
     && rm -rf /tmp/* \
     && apt-get autoremove -y \
     && apt-get autoclean -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -O /usr/local/bin/install2.r https://github.com/eddelbuettel/littler/raw/master/inst/examples/install2.r \
+RUN curl -Lo /usr/local/bin/install2.r https://github.com/eddelbuettel/littler/raw/master/inst/examples/install2.r \
     && chmod +x /usr/local/bin/install2.r
 
 RUN install2.r --error \
