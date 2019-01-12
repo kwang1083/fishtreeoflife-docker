@@ -26,9 +26,8 @@ RUN install2.r --error \
     MonoPhy \
     && rm -rf /tmp/*
 
-COPY downloads/* downloads/
-
 COPY scripts/* scripts/
+COPY downloads/* downloads/
 
 RUN Rscript scripts/generate_taxonomy.R family \
     && Rscript scripts/generate_taxonomy.R order \
