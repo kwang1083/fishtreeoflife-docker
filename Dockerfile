@@ -19,14 +19,8 @@ RUN curl -Lo /usr/local/bin/install2.r https://github.com/eddelbuettel/littler/r
     && chmod +x /usr/local/bin/install2.r
 
 RUN install2.r --error \
-    --deps TRUE \
     --ncpus -1 \
     tidyverse \
-    dplyr \
-    devtools \
-    formatR \
-    remotes \
-    selectr \
     ape \
     future \
     MonoPhy \
