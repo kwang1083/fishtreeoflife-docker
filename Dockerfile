@@ -29,7 +29,7 @@ RUN install2.r --error \
     ape \
     future \
     MonoPhy \
-    && rm -rf /tmp/* \
+    && rm -rf /tmp/*
 
 COPY downloads/* downloads/
 
