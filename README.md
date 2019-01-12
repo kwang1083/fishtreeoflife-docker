@@ -3,7 +3,7 @@
 ## Updating the Docker image
 
 ```
-docker build .
+docker build -t jonchang/fishtreeoflife-docker:latest .
 docker push jonchang/fishtreeoflife-docker:latest
 ```
 
