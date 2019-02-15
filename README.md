@@ -10,5 +10,11 @@ docker push jonchang/fishtreeoflife-docker:latest
 ## Building without cache
 
 ```
-docker build --no-cache .
+docker build -t jonchang/fishtreeoflife-docker:latest .
 ```
+
+## See image layers
+
+```
+
+``
