@@ -67,7 +67,7 @@ compute_phylogram <- function(edge, Ntip, Nnode, xx, yy) {
     x0h <- xx[edge[, 1]]
     x1h <- xx[edge[, 2]]
     y0h <- yy[edge[, 2]]
-    data_frame(x = c(x0h, x0v), y = c(y0h, y0v), xend = c(x1h, x0v), yend = c(y0h, y1v))
+    tibble(x = c(x0h, x0v), y = c(y0h, y0v), xend = c(x1h, x0v), yend = c(y0h, y1v))
 }
 
 dir.create(OUTDIR, showWarning = FALSE, recursive = TRUE)
@@ -82,7 +82,7 @@ yy <- metrics$yy[1:metrics$Ntip]
 ramp <- colorRamp(RColorBrewer::brewer.pal(9, "BuGn")[1:8])
 richness <- tax %>% group_by(label) %>% summarise(richness = n()) %>% mutate(color = rgb(ramp(log(richness) / log(max(richness))), maxColorValue = 255))
 
-to_svg <- data_frame(x = xx, y = yy, label = skeleton$tip.label) %>% left_join(mono) %>% left_join(stats) %>% select(-exemplar, -node) %>% mutate(depth = max(x) - depth) %>% left_join(richness)
+to_svg <- tibble(x = xx, y = yy, label = skeleton$tip.label) %>% left_join(mono) %>% left_join(stats) %>% select(-exemplar, -node) %>% mutate(depth = max(x) - depth) %>% left_join(richness)
 
 js <- jsonlite::toJSON(to_svg)
 cat(js, file = file.path(OUTDIR, paste0(wanted_rank, "_data.json")))
