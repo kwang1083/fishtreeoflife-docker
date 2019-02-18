@@ -5,7 +5,6 @@ RUN install2.r --error \
     ape \
     future \
     phangorn \
-    progress \
     && rm -rf /tmp/*
 
 COPY scripts/* scripts/

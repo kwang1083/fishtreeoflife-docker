@@ -6,7 +6,6 @@ library(glue)
 library(future)
 library(listenv)
 library(jsonlite)
-library(progress)
 
 
 source("scripts/lib.R")
@@ -56,7 +55,7 @@ generate_rank_data <- function(df, current_rank, downloadpath) {
                x[!is.na(x)]
     })
     rankname <- unique(out$taxonomy[[current_rank]])
-    cat(current_rank, "=>", rankname, fill = TRUE)
+    #cat(current_rank, "=>", rankname, fill = TRUE)
     wanted_rates <- tiprates %>% filter(species %in% out$sampled_species)
     out$tiprates_dr <- filter(wanted_rates, !is.na(dr)) %>% select(species, dr) %>% two_col_to_list()
     out$tiprates_bamm_lambda <- filter(wanted_rates, !is.na(lambda.tv)) %>% select(species, lambda.tv) %>% two_col_to_list()
@@ -118,19 +117,17 @@ output <- listenv()
 cat("Using", cores, "parallel jobs", fill = TRUE)
 
 for (rank in wanted_ranks) {
+    cat("Starting", rank, "jobs", fill = TRUE)
     download_path <- file.path("downloads/taxonomy", rank)
     dir.create(download_path, recursive = TRUE)
     splat <- split(tax, tax[[rank]])
-    pb <- progress_bar$new(format = paste(rank, "[:bar] :current/:total :eta"), total = length(splat))
-    pb$tick(0)
     for (named_rank in names(splat)) {
-        ps$tick()
         output[[named_rank]] %<-% { generate_rank_data(splat[[named_rank]], current_rank = rank, downloadpath = download_path) }
     }
 }
 
 for (rank in wanted_ranks) {
-    cat("Parsing", rank, "jobs", fill = TRUE)
+    cat("Waiting for", rank, "jobs", fill = TRUE)
     cc <- unique(tax[[rank]])
     cc <- cc[!is.na(cc)]
     res <- as.list(output[cc])
