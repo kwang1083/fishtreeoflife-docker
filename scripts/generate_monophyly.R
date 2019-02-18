@@ -2,7 +2,8 @@
 library(ape)
 library(dplyr)
 library(readr)
-library(MonoPhy)
+
+source("scripts/monophy_minimal.R")
 
 wanted_rank <- commandArgs(TRUE)
 if (length(wanted_rank) < 1) q(status = 1)
@@ -18,7 +19,7 @@ tax <- tax_orig %>% filter(tip %in% tre$tip.label) %>% as.data.frame()
 res <- AssessMonophyly(tre, tax, verbosity = 0)
 
 # purge the wicked
-evil <- c(do.call(c, res$label$IntruderTips), do.call(c, res$label$OutlierTips))
+evil <- c(unlist(res$label$IntruderTips, use.names = F), unlist(res$label$OutlierTips, use.names = F))
 
 tre2 <- drop.tip(tre, evil)
 tax2 <- filter(tax, !tip %in% evil)
