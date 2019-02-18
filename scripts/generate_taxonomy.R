@@ -6,6 +6,7 @@ library(glue)
 library(future)
 library(listenv)
 library(jsonlite)
+library(progress)
 
 
 source("scripts/lib.R")
@@ -117,11 +118,13 @@ output <- listenv()
 cat("Using", cores, "parallel jobs", fill = TRUE)
 
 for (rank in wanted_ranks) {
-    cat("Starting", rank, "jobs", fill = TRUE)
     download_path <- file.path("downloads/taxonomy", rank)
     dir.create(download_path, recursive = TRUE)
     splat <- split(tax, tax[[rank]])
+    pb <- progress_bar$new(format = paste(rank, "[:bar] :current/:total :eta"), total = length(splat))
+    pb$tick(0)
     for (named_rank in names(splat)) {
+        ps$tick()
         output[[named_rank]] %<-% { generate_rank_data(splat[[named_rank]], current_rank = rank, downloadpath = download_path) }
     }
 }
