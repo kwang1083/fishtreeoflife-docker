@@ -131,6 +131,7 @@ for (rank in wanted_ranks) {
     cc <- unique(tax[[rank]])
     cc <- cc[!is.na(cc)]
     res <- as.list(output[cc])
+    res <- res[sort(names(res))]
     cat(toJSON(res), file = file.path(datapath, paste0(rank, ".json")))
     # Error out if Travis gives us grief
     cc[!is.na(cc)]
