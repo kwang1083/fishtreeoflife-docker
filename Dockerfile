@@ -36,4 +36,4 @@ RUN Rscript scripts/generate_taxonomy.R family \
     && Rscript scripts/generate_fossils.R \
     && rm -rf scripts/*
 
-CMD ["R"]
+CMD ["bash"]
