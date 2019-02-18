@@ -29,8 +29,7 @@ RUN install2.r --error \
 COPY scripts/* scripts/
 COPY downloads/* downloads/
 
-RUN Rscript scripts/generate_taxonomy.R family \
-    && Rscript scripts/generate_taxonomy.R order \
+RUN Rscript scripts/generate_taxonomy.R \
     && Rscript scripts/generate_monophyly.R family \
     && Rscript scripts/generate_monophyly.R order \
     && Rscript scripts/generate_fossils.R \

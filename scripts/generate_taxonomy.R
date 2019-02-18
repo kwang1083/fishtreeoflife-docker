@@ -1,10 +1,8 @@
 #!/usr/bin/env Rscript
 
 library(ape)
-library(dplyr)
-library(readr)
+library(tidyverse)
 library(glue)
-library(stringr)
 library(future)
 library(jsonlite)
 
@@ -14,17 +12,8 @@ source("scripts/lib.R")
 # Set futures max size to 1GB
 options(future.globals.maxSize = 1024^3)
 
-# travis OOMs with 32 cores...
 cores <- parallel::detectCores()
 options(mc.cores = cores)
-if (Sys.getenv("TRAVIS") == "true") {
-    options(mc.cores = 4)
-}
-
-# get rank to build from command line arguments
-RANK <- commandArgs(TRUE)
-if (length(RANK) < 1) q(status = 1)
-
 
 plan(multicore)
 
@@ -35,6 +24,12 @@ tax %<-% read_csv("downloads/PFC_taxonomy.csv.xz", col_types = cols(.default = "
 dna %<-% scan("downloads/final_alignment.phylip.xz", what = list(character(), character()), quiet = TRUE, nlines = 11650, strip.white = TRUE, skip = 1)
 charsets <- readLines("downloads/final_alignment.partitions") %>% str_replace_all(fixed("DNA, "), "")
 tiprates <- read_csv("downloads/tiprates.csv.xz")
+
+wanted_ranks <- c("class", "subclass", "infraclass", "megacohort",
+"supercohort", "cohort", "subcohort", "infracohort", "section",
+"subsection", "division", "subdivision", "series", "superorder",
+"order", "suborder", "infraorder", "family")
+
 
 datapath <- "_data/taxonomy"
 
@@ -53,10 +48,13 @@ generate_rank_data <- function(df, current_rank, downloadpath) {
     out <- list()
     out$species <- df$genus.species
     out$sampled_species <- out$species[out$species %in% tips]
-    out$order <- unique(df$order)
-    out$family <- unique(df$family)
-    rankname <- out[[current_rank]]
-    cat(rankname, "...\n")
+    taxonomy <- gather(df, key = "rank", value = "name", wanted_ranks) %>% select(name, rank) %>% as.data.frame()
+    out$taxonomy <- split(taxonomy, taxonomy$rank) %>% lapply(function(x) {
+               x <- unique(x[["name"]])
+               x[!is.na(x)]
+    })
+    rankname <- unique(out$taxonomy[[current_rank]])
+    cat(current_rank, "=>", rankname, fill = TRUE)
     wanted_rates <- tiprates %>% filter(species %in% out$sampled_species)
     out$tiprates_dr <- filter(wanted_rates, !is.na(dr)) %>% select(species, dr) %>% two_col_to_list()
     out$tiprates_bamm_lambda <- filter(wanted_rates, !is.na(lambda.tv)) %>% select(species, lambda.tv) %>% two_col_to_list()
@@ -97,7 +95,7 @@ generate_rank_data <- function(df, current_rank, downloadpath) {
         }
     }
 
-    no_unbox <- c("species", "sampled_species", "family", "order", "rogues", "tiprates_dr", "tiprates_bamm_lambda", "tiprates_bamm_mu")
+    no_unbox <- c("species", "sampled_species", "family", "order", "rogues", "tiprates_dr", "tiprates_bamm_lambda", "tiprates_bamm_mu", "taxonomy")
     for (nn in names(out)) {
         if (!nn %in% no_unbox) out[[nn]] <- unbox(out[[nn]])
     }
@@ -110,16 +108,19 @@ invisible(tre)
 invisible(tre2)
 #invisible(fulltree)
 
-cat("Starting", RANK, fill = TRUE)
-downloadpath <- file.path("downloads/taxonomy", RANK)
-dir.create(downloadpath, recursive = TRUE)
+#tax <- filter(tax, order == "Perciformes")
+#wanted_ranks <- c("order", "suborder", "infraorder", "family")
 
-splat <- split(tax, tax[[RANK]])
-res <- parallel::mclapply(splat, generate_rank_data, current_rank = RANK, downloadpath = downloadpath)
-cat(toJSON(res), file = file.path(datapath, paste0(RANK, ".json")))
-
-# Error out if Travis gives us grief
-if (length(res) != length(splat)) {
-    cat("Wanted", length(splat), "results of rank", RANK, "but got", length(res), "results", fill = T)
-    q(status = 1)
+for (rank in wanted_ranks) {
+    cat("Starting", rank, fill = TRUE)
+    download_path <- file.path("downloads/taxonomy", rank)
+    dir.create(download_path, recursive = TRUE)
+    splat <- split(tax, tax[[rank]])
+    res <- parallel::mclapply(splat, generate_rank_data, current_rank = rank, downloadpath = download_path)
+    cat(toJSON(res), file = file.path(datapath, paste0(rank, ".json")))
+    # Error out if Travis gives us grief
+    if (length(res) != length(splat)) {
+        cat("Wanted", length(splat), "results of rank", rank, "but got", length(res), "results", fill = T)
+        q(status = 1)
+    }
 }
