@@ -4,6 +4,7 @@ library(ape)
 library(tidyverse)
 library(glue)
 library(future)
+library(listenv)
 library(jsonlite)
 
 
@@ -109,18 +110,32 @@ invisible(tre2)
 #invisible(fulltree)
 
 #tax <- filter(tax, order == "Perciformes")
-#wanted_ranks <- c("order", "suborder", "infraorder", "family")
+#wanted_ranks <- c("suborder", "infraorder", "family")
+
+output <- listenv()
+
+cat("Using", cores, "parallel jobs", fill = TRUE)
 
 for (rank in wanted_ranks) {
-    cat("Starting", rank, fill = TRUE)
+    cat("Starting", rank, "jobs", fill = TRUE)
     download_path <- file.path("downloads/taxonomy", rank)
     dir.create(download_path, recursive = TRUE)
     splat <- split(tax, tax[[rank]])
-    res <- parallel::mclapply(splat, generate_rank_data, current_rank = rank, downloadpath = download_path)
+    for (named_rank in names(splat)) {
+        output[[named_rank]] %<-% { generate_rank_data(splat[[named_rank]], current_rank = rank, downloadpath = download_path) }
+    }
+}
+
+for (rank in wanted_ranks) {
+    cat("Parsing", rank, "jobs", fill = TRUE)
+    cc <- unique(tax[[rank]])
+    cc <- cc[!is.na(cc)]
+    res <- as.list(output[cc])
     cat(toJSON(res), file = file.path(datapath, paste0(rank, ".json")))
     # Error out if Travis gives us grief
-    if (length(res) != length(splat)) {
-        cat("Wanted", length(splat), "results of rank", rank, "but got", length(res), "results", fill = T)
+    cc[!is.na(cc)]
+    if (length(res) != length(cc)) {
+        cat("Wanted", length(cc), "results of rank", rank, "but got", length(res), "results", fill = T)
         q(status = 1)
     }
 }
