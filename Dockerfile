@@ -15,7 +15,7 @@ COPY scripts/generate_taxonomy.R scripts/
 RUN Rscript scripts/generate_taxonomy.R
 
 COPY scripts/generate_monophyly.R scripts/monophy_minimal.R scripts/
-RUN Rscript scripts/generate_monophyly.R family
+RUN Rscript scripts/generate_monophyly.R family \
     && Rscript scripts/generate_monophyly.R order
 
 COPY scripts/generate_fossils.R scripts/
