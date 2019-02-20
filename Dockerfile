@@ -10,10 +10,13 @@ RUN install2.r --error \
 COPY scripts/* scripts/
 COPY downloads/* downloads/
 
-RUN Rscript scripts/generate_taxonomy.R \
-    && Rscript scripts/generate_monophyly.R family \
-    && Rscript scripts/generate_monophyly.R order \
-    && Rscript scripts/generate_fossils.R \
-    && rm -rf scripts/*
+RUN Rscript scripts/generate_taxonomy.R
+
+RUN Rscript scripts/generate_monophyly.R family
+    && Rscript scripts/generate_monophyly.R order
+
+RUN Rscript scripts/generate_fossils.R
+
+RUN rm -rf scripts/*
 
 CMD ["bash"]
