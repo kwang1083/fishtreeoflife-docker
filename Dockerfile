@@ -9,7 +9,7 @@ RUN install2.r --error \
 
 COPY downloads/* downloads/
 
-COPY scripts/lib.R scripts
+COPY scripts/lib.R scripts/
 
 COPY scripts/generate_taxonomy.R scripts/
 RUN Rscript scripts/generate_taxonomy.R
