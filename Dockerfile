@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:3.5.2
+FROM rocker/tidyverse:3.5.3
 
 RUN install2.r --error \
     --ncpus -1 \
