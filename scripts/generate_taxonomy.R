@@ -26,6 +26,16 @@ dna %<-% scan("downloads/final_alignment.phylip.xz", what = list(character(), ch
 charsets <- readLines("downloads/final_alignment.partitions") %>% str_replace_all(fixed("DNA, "), "")
 tiprates <- read_csv("downloads/tiprates.csv.xz")
 
+## Correct tiprates names
+taxconvert <- read_csv("downloads/taxonConversion.csv") %>% mutate_all(str_replace_all, "_", " ") %>% filter(!is.na(fishbase))
+
+# get matching tip rates names
+matched <- inner_join(tiprates, taxconvert, by = c(species = "fishbase"))
+fixed <- transmute(matched, species = treeTaxon, lambda.tv, mu.tv, lambda.tc, mu.tc, dr)
+
+# drop originals
+tiprates <- bind_rows(anti_join(tiprates, matched, by = "species"), fixed) %>% distinct()
+
 wanted_ranks <- c("class", "subclass", "infraclass", "megacohort",
 "supercohort", "cohort", "subcohort", "infracohort", "section",
 "subsection", "division", "subdivision", "series", "superorder",
