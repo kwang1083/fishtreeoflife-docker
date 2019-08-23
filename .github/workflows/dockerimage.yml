@@ -3,12 +3,15 @@ name: Docker Image CI
 on: [push]
 
 jobs:
-
   build:
- 
     runs-on: ubuntu-latest
- 
     steps:
     - uses: actions/checkout@v1
+    - name: Authenticate with Github Package Registry
+      run: docker login docker.pkg.github.com -u jonchang -p $GITHUB_TOKEN
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Build the Docker image
-      run: docker build . --file Dockerfile
+      run: docker build . --file Dockerfile --tag docker.pkg.github.com/$GITHUB_REPOSITORY/data:latest
+    - name: Push the image
+      run: docker push docker.pkg.github.com/$GITHUB_REPOSITORY/data:latest
