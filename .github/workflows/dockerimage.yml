@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Authenticate with Github Package Registry
-      run: docker login docker.pkg.github.com -u jonchang -p $GITHUB_TOKEN
+      run: echo -n $GITHUB_TOKEN | docker login -u jonchang --password-stdin docker.pkg.github.com
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Build the Docker image
