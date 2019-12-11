@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:3.6.1
+FROM rocker/tidyverse:3.6.1 AS build
 
 RUN install2.r --error \
     --ncpus -1 \
@@ -21,6 +21,11 @@ RUN Rscript scripts/generate_monophyly.R family \
 COPY scripts/generate_fossils.R scripts/
 RUN Rscript scripts/generate_fossils.R
 
-RUN rm -rf scripts/*
+FROM scratch AS files
+
+COPY --from=build _assets /
+COPY --from=build _fossils /
+COPY --from=build _data /
+COPY --from=build downloads /
 
 CMD ["bash"]
