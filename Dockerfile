@@ -23,9 +23,9 @@ RUN Rscript scripts/generate_fossils.R
 
 FROM alpine:3.10 AS files
 
-COPY --from=build _assets /
-COPY --from=build _fossils /
-COPY --from=build _data /
-COPY --from=build downloads /
+COPY --from=build _assets /_assets
+COPY --from=build _fossils /_fossils
+COPY --from=build _data /_data
+COPY --from=build downloads /downloads
 
-CMD ["bash"]
+CMD ["sh"]
