@@ -6,7 +6,10 @@ library(readr)
 source("scripts/monophy_minimal.R")
 
 wanted_rank <- commandArgs(TRUE)
-if (length(wanted_rank) < 1) q(status = 1)
+if (length(wanted_rank) < 1) {
+    cat("Need to specify a rank on the command line\n")
+    q(status = 1)
+}
 
 OUTDIR <- "_data/monophyly"
 
@@ -41,6 +44,9 @@ stats <- tax2 %>% group_by(label) %>% summarise(node = mrca_na(tre2, tip), depth
 skeleton <- drop.tip(tre2, which(!tre2$tip.label %in% stats$exemplar))
 skeleton$tip.label <- stats$label[match(skeleton$tip.label, stats$exemplar)]
 skeleton <- ladderize(skeleton, right = FALSE)
+
+# save skeletal tree
+file.path("downloads/taxonomy", paste0(wanted_rank, "_skeletal.tre")
 
 # open a null plot device to extract plot metrics
 pdf(NULL)
