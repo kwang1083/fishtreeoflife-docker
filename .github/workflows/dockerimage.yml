@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Authenticate with Github Package Registry
       run: echo -n $PACKAGE_ACCESS_TOKEN | docker login -u jonchang --password-stdin docker.pkg.github.com
       env:
