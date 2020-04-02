@@ -46,7 +46,7 @@ skeleton$tip.label <- stats$label[match(skeleton$tip.label, stats$exemplar)]
 skeleton <- ladderize(skeleton, right = FALSE)
 
 # save skeletal tree
-file.path("downloads/taxonomy", paste0(wanted_rank, "_skeletal.tre"))
+write.tree(skeleton, file.path("downloads/taxonomy", paste0(wanted_rank, "_skeletal.tre")))
 
 # open a null plot device to extract plot metrics
 pdf(NULL)
