@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:3.6 AS build
+FROM rocker/tidyverse:4.0.0 AS build
 
 RUN install2.r --error \
     --ncpus -1 \
