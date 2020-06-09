@@ -14,4 +14,5 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag docker.pkg.github.com/$GITHUB_REPOSITORY/data:latest
     - name: Push the image
+      if: ${{ success() && github.ref == 'refs/heads/master' }}
       run: docker push docker.pkg.github.com/$GITHUB_REPOSITORY/data:latest
