@@ -21,7 +21,7 @@ RUN Rscript scripts/generate_monophyly.R family \
 COPY scripts/generate_fossils.R scripts/
 RUN Rscript scripts/generate_fossils.R
 
-FROM alpine:3.10 AS files
+FROM alpine:3.12.0 AS files
 
 COPY --from=build _assets /_assets
 COPY --from=build _fossils /_fossils
