@@ -3,7 +3,7 @@ library(ape)
 library(dplyr)
 library(readr)
 
-source("scripts/monophy_minimal.R")
+source("R/monophy_minimal.R")
 
 wanted_rank <- commandArgs(TRUE)
 if (length(wanted_rank) < 1) {

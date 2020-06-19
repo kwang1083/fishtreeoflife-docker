@@ -21,8 +21,8 @@ fossil_nodes$idx <- seq_len(nrow(fossil_nodes))
 # Add a new column `node` with the node number of that calibration
 fossil_nodes <- group_by(fossil_nodes, group) %>% mutate(node = getMRCA(tree, c(left, right)))
 
-dir.create("_assets/img", recursive = TRUE)
-png("_assets/img/vertical_tree@3x.png", width = width * 3, height = height * 3)
+dir.create("assets/img", recursive = TRUE)
+png("assets/img/vertical_tree@3x.png", width = width * 3, height = height * 3)
 plot(tree, show.tip.label = FALSE, no.margin = TRUE)
 lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
 res <- fossil_nodes %>% mutate(x = lastPP$xx[node], y = lastPP$yy[node],
@@ -31,11 +31,11 @@ res <- fossil_nodes %>% mutate(x = lastPP$xx[node], y = lastPP$yy[node],
                                slug = slugify(fossil)) %>% ungroup()
 dev.off()
 
-png("_assets/img/vertical_tree@2x.png", width = width * 2, height = height * 2)
+png("assets/img/vertical_tree@2x.png", width = width * 2, height = height * 2)
 plot(tree, show.tip.label = FALSE, no.margin = TRUE)
 dev.off()
 
-png("_assets/img/vertical_tree@1x.png", width = width, height = height)
+png("assets/img/vertical_tree@1x.png", width = width, height = height)
 plot(tree, show.tip.label = FALSE, no.margin = TRUE)
 dev.off()
 
