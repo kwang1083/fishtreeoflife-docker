@@ -9,21 +9,21 @@ RUN install2.r --error \
 
 COPY downloads/* downloads/
 
-COPY scripts/lib.R scripts/
+COPY R/lib.R R/
 
-COPY scripts/generate_taxonomy.R scripts/
-RUN Rscript scripts/generate_taxonomy.R
+COPY R/generate_taxonomy.R R/
+RUN Rscript R/generate_taxonomy.R
 
-COPY scripts/generate_monophyly.R scripts/monophy_minimal.R scripts/
-RUN Rscript scripts/generate_monophyly.R family \
-    && Rscript scripts/generate_monophyly.R order
+COPY R/generate_monophyly.R R/monophy_minimal.R R/
+RUN Rscript R/generate_monophyly.R family \
+    && Rscript R/generate_monophyly.R order
 
-COPY scripts/generate_fossils.R scripts/
-RUN Rscript scripts/generate_fossils.R
+COPY R/generate_fossils.R R/
+RUN Rscript R/generate_fossils.R
 
 FROM alpine:3.12.0 AS files
 
-COPY --from=build _assets /_assets
+COPY --from=build assets /assets
 COPY --from=build _fossils /_fossils
 COPY --from=build _data /_data
 COPY --from=build downloads /downloads

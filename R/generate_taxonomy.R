@@ -8,7 +8,7 @@ library(listenv)
 library(jsonlite)
 
 
-source("scripts/lib.R")
+source("R/lib.R")
 
 # Set futures max size to 1GB
 options(future.globals.maxSize = 1024^3)
