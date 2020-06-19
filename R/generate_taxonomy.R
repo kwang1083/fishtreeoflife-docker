@@ -59,7 +59,7 @@ generate_rank_data <- function(df, current_rank, downloadpath) {
     out <- list()
     out$species <- df$genus.species
     out$sampled_species <- out$species[out$species %in% tips]
-    taxonomy <- gather(df, key = "rank", value = "name", wanted_ranks) %>% select(name, rank) %>% as.data.frame()
+    taxonomy <- gather(df, key = "rank", value = "name", all_of(wanted_ranks)) %>% select(name, rank) %>% as.data.frame()
     out$taxonomy <- split(taxonomy, taxonomy$rank) %>% lapply(function(x) {
                x <- unique(x[["name"]])
                x[!is.na(x)]
