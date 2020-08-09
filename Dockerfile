@@ -1,4 +1,9 @@
-FROM rocker/tidyverse:4.0.0 AS build
+FROM rocker/tidyverse:4.0.2 AS build
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    libglpk40 \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN install2.r --error \
     --ncpus -1 \
