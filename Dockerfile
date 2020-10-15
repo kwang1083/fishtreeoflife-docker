@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:4.0.2 AS build
+FROM rocker/tidyverse:4.0.3 AS build
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
