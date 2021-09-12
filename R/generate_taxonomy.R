@@ -59,6 +59,7 @@ generate_rank_data <- function(df, current_rank, downloadpath) {
     out <- list()
     out$species <- df$genus.species
     out$sampled_species <- out$species[out$species %in% tips]
+    out$unsampled_species <- out$species[!out$species %in% tips]
     taxonomy <- gather(df, key = "rank", value = "name", all_of(wanted_ranks)) %>% select(name, rank) %>% as.data.frame()
     out$taxonomy <- split(taxonomy, taxonomy$rank) %>% lapply(function(x) {
                x <- unique(x[["name"]])
@@ -106,7 +107,7 @@ generate_rank_data <- function(df, current_rank, downloadpath) {
         }
     }
 
-    no_unbox <- c("species", "sampled_species", "family", "order", "rogues", "tiprates_dr", "tiprates_bamm_lambda", "tiprates_bamm_mu", "taxonomy")
+    no_unbox <- c("species", "unsampled_species" ,"sampled_species", "family", "order", "rogues", "tiprates_dr", "tiprates_bamm_lambda", "tiprates_bamm_mu", "taxonomy")
     for (nn in names(out)) {
         if (!nn %in% no_unbox) out[[nn]] <- unbox(out[[nn]])
     }
