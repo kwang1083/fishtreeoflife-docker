@@ -1,16 +1,39 @@
 #!/usr/bin/env Rscript
 
 library(ape)
+library(tidyverse)
 library(dplyr)
 library(readr)
 library(ggplot2)
 library(stringr)
+library(future)
+library(listenv)
 
 width <- 1000 - (30 * 2)
 height <- width * 3
 
 slugify <- function(str) {
     str %>% str_replace_all("[^a-zA-Z0-9-]", "-") %>% str_replace_all("-+", "-") %>% str_replace("-$", "") %>% tolower()
+}
+
+tax %<-% read_csv("downloads/PFC_taxonomy.csv.xz", col_types = cols(.default = "c"))
+wanted_ranks <- c("class", "subclass", "infraclass", "megacohort",
+                  "supercohort", "cohort", "subcohort", "infracohort", "section",
+                  "subsection", "division", "subdivision", "series", "superorder",
+                  "order", "suborder", "infraorder", "family")
+
+output <- list()
+generate_rank_data <- function(df) {
+    out <- list()
+    out$species <- df$genus.species
+    out
+}
+
+for (rank in wanted_ranks) {
+    splat <- split(tax, tax[[rank]])
+    for (named_rank in names(splat)) {
+        output[[rank]][[named_rank]] <- { generate_rank_data(splat[[named_rank]]) }
+    }
 }
 
 tree <- read.tree("downloads/actinopt_12k_treePL.tre.xz")
@@ -39,6 +62,54 @@ png("assets/img/vertical_tree@1x.png", width = width, height = height)
 plot(tree, show.tip.label = FALSE, no.margin = TRUE)
 dev.off()
 
+rank <- "class"
+named_rank <- "hello"
+"class" <- c(get("class"), named_rank)
+
+
+class <- character(0)
+subclass <- character(0)
+infraclass <- character(0)
+megacohort <- character(0)
+supercohort <- character(0)
+cohort <- character(0)
+subcohort <- character(0)
+infracohort <- character(0)
+section <- character(0)
+subsection <- character(0)
+division <- character(0)
+subdivision <- character(0)
+series <- character(0)
+superorder <- character(0)
+order <- character(0)
+suborder <- character(0)
+infraorder <- character(0)
+family <- character(0)
+
+for(i in 1:nrow(res)) {
+    row <- res[i,]
+    left <- str_replace(row$left, "_", " ")
+    right <- str_replace(row$right, "_", " ")
+    for (rank in wanted_ranks) {
+        splat <- split(tax, tax[[rank]])
+        for (named_rank in names(splat)) {
+            species <- output[[rank]][[named_rank]]$species
+            found <- FALSE
+            if(left %in% species && right %in% species) {
+                assign(rank, c(get(rank), named_rank))
+                found <- TRUE
+                break
+            }
+        }
+        if(!found) {
+            assign(rank, c(get(rank), NA))
+        }
+    }
+}
+
+res <- cbind(res, class, subclass, infraclass, megacohort, supercohort, cohort, subcohort,
+             infracohort, section, subsection, division, subdivision, series, superorder,
+             order, suborder, infraorder, family)
 
 res %>% write_csv("_data/fossil_data.csv")
 res %>% transmute(clade = clade_pretty, fossil, left, right, min, max, locality, authority, age_authority) %>% write_csv("_data/fossil_pretty.csv")
