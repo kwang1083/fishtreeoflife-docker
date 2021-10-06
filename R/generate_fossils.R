@@ -62,30 +62,7 @@ png("assets/img/vertical_tree@1x.png", width = width, height = height)
 plot(tree, show.tip.label = FALSE, no.margin = TRUE)
 dev.off()
 
-rank <- "class"
-named_rank <- "hello"
-"class" <- c(get("class"), named_rank)
-
-
-class <- character(0)
-subclass <- character(0)
-infraclass <- character(0)
-megacohort <- character(0)
-supercohort <- character(0)
-cohort <- character(0)
-subcohort <- character(0)
-infracohort <- character(0)
-section <- character(0)
-subsection <- character(0)
-division <- character(0)
-subdivision <- character(0)
-series <- character(0)
-superorder <- character(0)
-order <- character(0)
-suborder <- character(0)
-infraorder <- character(0)
-family <- character(0)
-
+output_cols <- list()
 for(i in 1:nrow(res)) {
     row <- res[i,]
     left <- str_replace(row$left, "_", " ")
@@ -96,20 +73,20 @@ for(i in 1:nrow(res)) {
             species <- output[[rank]][[named_rank]]$species
             found <- FALSE
             if(left %in% species && right %in% species) {
-                assign(rank, c(get(rank), named_rank))
+                output_cols[[rank]] = c(output_cols[[rank]], named_rank)
                 found <- TRUE
                 break
             }
         }
         if(!found) {
-            assign(rank, c(get(rank), NA))
+            output_cols[[rank]] = c(output_cols[[rank]], NA)
         }
     }
 }
 
-res <- cbind(res, class, subclass, infraclass, megacohort, supercohort, cohort, subcohort,
-             infracohort, section, subsection, division, subdivision, series, superorder,
-             order, suborder, infraorder, family)
+for(rank in wanted_ranks) {
+    res <- cbind(res, output_cols[[rank]])
+}
 
 res %>% write_csv("_data/fossil_data.csv")
 res %>% transmute(clade = clade_pretty, fossil, left, right, min, max, locality, authority, age_authority) %>% write_csv("_data/fossil_pretty.csv")
