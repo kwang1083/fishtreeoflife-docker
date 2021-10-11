@@ -32,7 +32,7 @@ generate_rank_data <- function(df) {
 for (rank in wanted_ranks) {
     splat <- split(tax, tax[[rank]])
     for (named_rank in names(splat)) {
-        output[[rank]][[named_rank]] <- { generate_rank_data(splat[[named_rank]]) }
+        output[[rank]][[named_rank]] <- generate_rank_data(splat[[named_rank]])
     }
 }
 
