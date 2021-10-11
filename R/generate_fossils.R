@@ -84,10 +84,9 @@ for(i in 1:nrow(res)) {
     }
 }
 
-for(rank in wanted_ranks) {
-    res <- cbind(res, output_cols[[rank]])
-}
+res <- cbind(res, as.data.frame(output_cols))
 
+dir.create("_data/", recursive = TRUE)
 res %>% write_csv("_data/fossil_data.csv")
 res %>% transmute(clade = clade_pretty, fossil, left, right, min, max, locality, authority, age_authority) %>% write_csv("_data/fossil_pretty.csv")
 
